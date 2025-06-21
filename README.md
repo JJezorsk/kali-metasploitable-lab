@@ -37,7 +37,7 @@ nmap -sS -sV -T4 192.168.64.3 -oN version-scan.txt
 ```
 Summary:
 - FTP: vsftpd 2.3.4
-- SSH: OpenSSH 4.7p1 Debian
+- SSH: OpenSSH 4.7p1 Debian 8ubuntu1 (protocol 2.0)
 - HTTP: Apache 2.2.8
   
 #### Vulnerability Detection
@@ -45,9 +45,8 @@ Summary:
 nmap --script vuln -T4 192.168.64.3 -oN vuln-scan.txt
 ```
 Summary: 
-- Port 21 - VULNERABLE to vsftpd 2.3.4 backdoor (CVE-2011-2523)
-- Port 22 - 
-- Port 80 - Apache version outdated with multiple CVEs
+- Port 21 (FTP) - VULNERABLE to vsftpd 2.3.4 backdoor (CVE-2011-2523)
+- Port 80 (HTTP) - Apache version outdated with multiple CVEs
 
 
 ---
@@ -65,7 +64,33 @@ exploit
 ```
 
 Result: 
-* Successful shell access as ```root```
+* Successful shell access as root
 * Verified with ```whoami```
 
-### Exploit: 
+---
+### SSH Exploit: 
+
+**Target IP:** 192.168.64.3  
+**Tool Used:** Native OpenSSH Client
+
+**Login Attempt:**
+```bash
+ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa msfadmin@192.168.64.3
+```
+
+Result: 
+* Successful login using default credentials:
+  * Username: msfadmin
+  * Password: msfadmin
+* Access confirmed with:
+  ```whoami```
+
+####Compatibility Issue: Legacy SSH Key Algorithms
+
+**Problem Encountered**
+```Unable to negotiate with 192.168.64.3 port 22: no matching host key type found. Their offer: ssh-rsa,ssh-dss```
+**Solution**
+```ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa msfadmin@192.168.64.3```
+
+Lessons Learned:
+Modern SSH clients disable insecure key types by default. In these lab scenarios with outdated systems compatibility flags may be required to access vulnerable targets. SOC teams should monitor for these depreciated cryptographic negotiations as potential attack indicators. 
