@@ -30,13 +30,11 @@ This project simulates an internal network attack scenario using Kali Linux (att
 
 ---
 
-## 🔎 Phase 1: Reconnaissance
+## Phase 1: Reconnaissance
 
 ### Target IP: `192.168.64.3`
 
----
-
-### 🔍 Basic Nmap Scan
+### Basic Nmap Scan
 
 ```bash
 nmap -sS -T4 192.168.64.3 -oN basic-scan.txt
@@ -99,6 +97,8 @@ ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa msfadmin@19
 * Access confirmed with:
   `whoami`
 
+---
+
 #### Compatibility Issue: Legacy SSH Key Algorithms
 
 **Problem Encountered**
@@ -143,7 +143,7 @@ www-data
 
 ---
 
-**###HTTP Brute-Force Attack – DVWA Login**
+### HTTP Brute-Force Attack – DVWA Login
 
 **Target URL:** `http://192.168.64.3/dvwa/login.php` 
 **Login Type:** HTTP POST Form  
