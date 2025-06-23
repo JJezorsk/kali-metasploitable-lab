@@ -12,7 +12,7 @@ This project simulates an internal network attack scenario using Kali Linux (att
   - [Service Version Detection](#service-version-detection)
   - [Vulnerability Detection](#vulnerability-detection)
 - [Phase 2: Exploitation](#phase-2-exploitation)
-  - [FTP Exploit – vsftpd 2.3.4 Backdoor](#FTP Exploit - vsftpd 2.3.4 Backdoor (CVE-2011-2523)
+  - [FTP Exploit – vsftpd 2.3.4 Backdoor](#ftp-exploit--vsftpd 2.3.4 backdoor-cve-2011-2523)
   - [SSH Exploit](#ssh-exploit)
   - [HTTP Exploit – DVWA Command Injection](#http-exploit--dvwa-command-injection)
   - [HTTP Brute-Force Attack – DVWA Login](#http-brute-force-attack--dvwa-login)
@@ -118,7 +118,7 @@ ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa msfadmin@19
 ```ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa msfadmin@192.168.64.3```
 
 **Lessons Learned:**
-Modern SSH clients disable depreciate algorithms by default. Lab environments often require these legacy options to connect. SOC teams should watch for deprecated algorithm negotiation in logs as potential indicators of legacy or malicious activity.
+Modern SSH clients disable depreciated algorithms by default. Lab environments often require these legacy options to connect. SOC teams should watch for deprecated algorithm negotiation in logs as potential indicators of legacy or malicious activity.
 
 
 ---
@@ -153,7 +153,7 @@ www-data
 
 ***Result:***
 * Successfully executed `whoami`
-* Proved remote command execution vulnerability
+* Confirmed remote command execution vulnerability
 
 
 ---
