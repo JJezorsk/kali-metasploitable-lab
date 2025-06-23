@@ -12,7 +12,7 @@ This project simulates an internal network attack scenario using Kali Linux (att
   - [Service Version Detection](#service-version-detection)
   - [Vulnerability Detection](#vulnerability-detection)
 - [Phase 2: Exploitation](#phase-2-exploitation)
-  - [FTP Exploit – vsftpd 2.3.4 Backdoor](#ftp-exploit--vsftpd 2.3.4 backdoor-cve-2011-2523)
+  - [FTP Exploit – vsftpd 2.3.4 Backdoor](#ftp-exploit--vsftpd-234-backdoor-cve-2011-2523)
   - [SSH Exploit](#ssh-exploit)
   - [HTTP Exploit – DVWA Command Injection](#http-exploit--dvwa-command-injection)
   - [HTTP Brute-Force Attack – DVWA Login](#http-brute-force-attack--dvwa-login)
