@@ -76,7 +76,7 @@ nmap --script vuln -T4 192.168.64.3 -oN vuln-scan.txt
 
 ## Phase 2: Exploitation
 
-### FTP Exploit - vsftpd 2.3.4 Backdoor (CVE-2011-2523)
+### FTP Exploit – vsftpd 2.3.4 Backdoor CVE-2011-2523
 
 #### Tool Used: Metasploit Framework
 ```bash
