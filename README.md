@@ -123,3 +123,7 @@ Modern SSH clients disable insecure key types by default. In these lab scenarios
 ...
 www-data
 ```
+
+Result:
+* Confirmed server responded with user `www-data`
+* Successfully executed  arbitrary command (`whoami`)
