@@ -12,7 +12,7 @@ This project simulates an internal network attack scenario using Kali Linux (att
   - [Service Version Detection](#service-version-detection)
   - [Vulnerability Detection](#vulnerability-detection)
 - [Phase 2: Exploitation](#phase-2-exploitation)
-  - [FTP Exploit – vsftpd 2.3.4 Backdoor](#ftp-exploit--vsftpd-234-backdoor)
+  - [FTP Exploit – vsftpd 2.3.4 Backdoor](#FTP Exploit - vsftpd 2.3.4 Backdoor (CVE-2011-2523)
   - [SSH Exploit](#ssh-exploit)
   - [HTTP Exploit – DVWA Command Injection](#http-exploit--dvwa-command-injection)
   - [HTTP Brute-Force Attack – DVWA Login](#http-brute-force-attack--dvwa-login)
@@ -33,6 +33,16 @@ This project simulates an internal network attack scenario using Kali Linux (att
 ## Phase 1: Reconnaissance
 
 ### Target IP: `192.168.64.3`
+
+---
+### Scan Files
+These are the original Nmap scan output files I used for analysis:
+
+* [basic-scan.txt](./basic-scan.txt)
+* [version-scan.txt](./version-scan.txt)
+* [vuln-scan.txt](./vuln-scan.txt)
+
+---
 
 ### Basic Nmap Scan
 
@@ -122,6 +132,11 @@ Modern SSH clients disable depreciate algorithms by default. Lab environments of
 
 **DVWA Configuration:**
 - Set security level to `Low` under the "DVWA Security" tab
+
+**Recon Tool Used:** [Nikto](https://github.com/sullo/nikto)  
+**Scan Output:** [nikto-scan.txt](./nikto-scan.txt)
+
+Nikto was used to identify accessible directories and common web vulnerabilities. This helped uncover `/phpinfo.php` and `/test/`, indicating potential weak points in the Apache web server.
 
 **Exploit Method:**
 - Injected shell command via the IP input field:
