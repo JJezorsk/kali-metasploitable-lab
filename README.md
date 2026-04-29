@@ -178,8 +178,27 @@ hydra -L usernames.txt -P /usr/share/wordlists/rockyou.txt 192.168.64.3 http-pos
 * Demonstrated the importance of strong password credential policies
 
 
-**SOC Analyst Takeaways**
-Brute-force activity can be detected via repeated login failures, especially to web apps or SSH
-Exploits often rely on outdated software or weak credentials
-Key log indicators: POST attempts to login pages, multiple SSH attempts, legacy crypto negotiations
-Defenses: Rate limiting, MFA, updated services, IDS/IPS, log monitoring
+### SOC Analyst Takeaways
+
+Brute-Force Detection
+
+Brute-force attacks against web apps and SSH show up as a flood of failed login attempts in your logs — Hydra made this obvious during the DVWA exercise
+Watch for repeated POST requests hitting login pages, especially in short time windows
+This is exactly the kind of noise an IDS/IPS should be tuned to catch — pair that with rate limiting, account lockout, and MFA and you've significantly raised the cost of this attack
+
+Patch Management Matters More Than People Think
+
+vsftpd 2.3.4 has a backdoor that's been publicly documented since 2011 (CVE-2011-2523) — it still worked here without modification
+If a 13-year-old exploit runs clean in your environment, that's a patch management problem, not a sophisticated attack
+Regular vulnerability scans (Nessus, OpenVAS) exist specifically to catch this before an attacker does
+
+Legacy Cryptography in Logs
+
+When I tried to SSH into Metasploitable2, my modern client refused to connect because the server was offering deprecated algorithms (ssh-rsa, ssh-dss)
+That negotiation attempt shows up in logs — and if you're seeing it from an external IP, it's worth a closer look
+SOC teams should alert on legacy algorithm negotiation from unexpected sources and enforce modern cipher suites on any systems they control
+
+Command Injection & Web App Security
+
+The DVWA command injection exercise was a good reminder that unsanitized input fields can hand an attacker OS-level access — I went from a web form to running whoami as www-data in about 30 seconds
+Input validation and WAF rules should be the first line of defense here, but also make sure your web server processes are running with least privilege so even a successful injection has limited blast radius
